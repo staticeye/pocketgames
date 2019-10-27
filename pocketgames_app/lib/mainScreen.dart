@@ -4,21 +4,36 @@ import 'gameSelection.dart';
 class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text(
-            "Play"
+    return Container(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            child: Image(
+              image: AssetImage("assets/images/background.jpg"),
+              fit: BoxFit.cover,
+            ),
           ),
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>GameSelection()),
-            );
-          },
-        ),
-      ),
+
+          Container(
+            alignment: FractionalOffset(0.5, 0.25),
+            padding: EdgeInsets.all(10.0),
+            child: Image(image: AssetImage("assets/images/pocketGames.png"),),
+          ),
+          Container(
+            alignment: FractionalOffset(0.5, 0.95),
+            child: SizedBox(
+              width: 250.0,
+              child: FlatButton(
+              onPressed: (){Navigator.push(context, MaterialPageRoute(
+                builder: (context)=>GameSelection()
+              ));},
+              child: Image(image: AssetImage("assets/images/playButton.png"),)
+            ),
+            )
+          ),
+        ],
+      )
     );
   }
 }
