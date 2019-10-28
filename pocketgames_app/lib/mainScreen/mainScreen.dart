@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'gameSelection.dart';
+import 'package:pocketgames_app/gameSelection/gameSelection.dart';
 
 class MainScreen extends StatelessWidget {
   @override
@@ -26,7 +26,7 @@ class MainScreen extends StatelessWidget {
               width: 250.0,
               child: FlatButton(
               onPressed: (){Navigator.push(context, MaterialPageRoute(
-                builder: (context)=>GameSelection()
+                builder: (context) => GameSelection()
               ));},
               child: Image(image: AssetImage("assets/images/playButton.png"),)
             ),

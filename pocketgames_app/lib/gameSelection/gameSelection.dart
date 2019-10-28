@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pocketgames_app/ticTacToeGame.dart';
+import 'package:pocketgames_app/ticTacToeGame/ticTacToeGame.dart';
 
 class GameSelection extends StatelessWidget {
+
+  static void doCardAction(){
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,14 +29,17 @@ class GameSelection extends StatelessWidget {
             padding: EdgeInsets.all(3.5),
             children: <Widget>[
               Container(
-                  child: SizedBox(
-                height: 50.0,
-                child: FlatButton(
-                  color: Colors.amber,
-                  onPressed: () {},
-                  child: Text("Tic Tac Toe"),
-                ),
-              ))
+                  child: Card(
+                    color: Colors.amber[200],
+                    child: ListTile(
+                      onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>TicTacToe()));},
+                      leading: Image(
+                        image: AssetImage("lib/gameSelection/images/ticTacToe.png"),
+                      ),
+                      title: Text("Tic Tac Toe"),
+                    ),
+                  )
+                  )
             ],
           ),
         ],

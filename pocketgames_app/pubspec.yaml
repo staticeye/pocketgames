@@ -45,6 +45,7 @@ flutter:
    - assets/images/background.jpg
    - assets/images/playButton.png
    - assets/images/pocketGames.png
+   - lib/gameSelection/images/ticTacToe.png
 
    
 
