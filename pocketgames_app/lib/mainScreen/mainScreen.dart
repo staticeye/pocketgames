@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
+import 'package:pocketgames_app/common/commonElements.dart';
 import 'package:pocketgames_app/gameSelection/gameSelection.dart';
 
 class MainScreen extends StatelessWidget {
@@ -17,17 +19,17 @@ class MainScreen extends StatelessWidget {
 
           Container(
             alignment: FractionalOffset(0.5, 0.25),
-            padding: EdgeInsets.all(10.0),
-            child: Image(image: AssetImage("assets/images/pocketGames.png"),),
+            padding: EdgeInsets.symmetric(horizontal: CommonElements.getLetRigAstoScrWidth(context, 2)),
+            child: Image(image: AssetImage("assets/images/pocketGames.png"),
+            fit: BoxFit.cover,),
           ),
           Container(
             alignment: FractionalOffset(0.5, 0.95),
             child: SizedBox(
               width: 250.0,
               child: FlatButton(
-              onPressed: (){Navigator.push(context, MaterialPageRoute(
-                builder: (context) => GameSelection()
-              ));},
+              onPressed: (){
+                Navigator.pushReplacementNamed(context, 'GameSelection');},
               child: Image(image: AssetImage("assets/images/playButton.png"),)
             ),
             )

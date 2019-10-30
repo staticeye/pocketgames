@@ -16,6 +16,10 @@ class _State extends State<TicTacToe> {
   var player1;
   var player2;
   var activePlayer;
+  bool _isFriend = false;
+  bool _isSwitchEnable = false;
+  bool _isGridDisable = false;
+  final _notification = "Press reset button to start the game again";
 
   @override
   void initState() {
@@ -25,14 +29,16 @@ class _State extends State<TicTacToe> {
 
   void playGame(GameButton gb) {
     setState(() {
+      _isSwitchEnable = true;
+
       if (activePlayer == 1) {
         gb.text = "X";
-        gb.background = AppColor.logoRed;
+        gb.background = AppColor.darkAmberColor;
         activePlayer = 2;
         player1.add(gb.id);
       } else {
         gb.text = "O";
-        gb.background = Colors.black;
+        gb.background = AppColor.blackColor;
         activePlayer = 1;
         player2.add(gb.id);
       }
@@ -44,9 +50,21 @@ class _State extends State<TicTacToe> {
           showDialog(
               context: context,
               builder: (_) => new CustomDialog("Game Tied",
-                  "Press the Reset button to Start Aragin", resetGame));
+                  _notification, resetGame));
         } else {
-          activePlayer == 2 ? autoPlay() : null;
+          if (activePlayer == 2) {
+            if (_isFriend) {
+              null;
+            } else {
+              _isGridDisable = true;
+              Future.delayed(const Duration(milliseconds: 500), () {
+                autoPlay();
+                _isGridDisable = false;
+              });
+            }
+          } else {
+            null;
+          }
         }
       }
     });
@@ -54,10 +72,10 @@ class _State extends State<TicTacToe> {
 
   void autoPlay() {
     var emptyCells = new List();
-    var list = new List.generate(9, (i)=> i+1 );
+    var list = new List.generate(9, (i) => i + 1);
 
-    for(var cellId in list){
-      if(!(player1.contains(cellId) || player2.contains(cellId))){
+    for (var cellId in list) {
+      if (!(player1.contains(cellId) || player2.contains(cellId))) {
         emptyCells.add(cellId);
       }
     }
@@ -66,9 +84,10 @@ class _State extends State<TicTacToe> {
     var randomIndex = r.nextInt(emptyCells.length - 1);
     var cellID = emptyCells[randomIndex];
 
-    int i = buttonList.indexWhere((p)=> p.id == cellID);
+    int i = buttonList.indexWhere((p) => p.id == cellID);
     playGame(buttonList[i]);
   }
+
   int checkWinner() {
     var winner = -1;
     //Row 1
@@ -139,18 +158,17 @@ class _State extends State<TicTacToe> {
       if (winner == 1) {
         showDialog(
             context: context,
-            builder: (_) => new CustomDialog("Player 1 Won",
-                "Press Reset button to start the game again", resetGame));
+            builder: (_) => new CustomDialog(_isFriend ? "Player 1 won" : "You won",
+                _notification, resetGame));
       } else {
         showDialog(
             context: context,
-            builder: (_) => new CustomDialog("Player 2 Won",
-                "Press Reset button to start the game again", resetGame));
+            builder: (_) => new CustomDialog(_isFriend ? "Player 2 won" : "Computer won",
+                _notification, resetGame));
       }
-
     }
 
-          return winner;
+    return winner;
   }
 
   void resetGame() {
@@ -158,12 +176,14 @@ class _State extends State<TicTacToe> {
 
     setState(() {
       buttonList = doInit();
+      _isSwitchEnable = false;
     });
   }
 
   void resetGameButton() {
     setState(() {
       buttonList = doInit();
+      _isSwitchEnable = false;
     });
   }
 
@@ -171,12 +191,59 @@ class _State extends State<TicTacToe> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tic Tac Toe"),
+        title: Text(
+          "Tic Tac Toe",
+          style: TextStyle(fontSize: CommonElements.getFontSize(context, -1)),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          SizedBox(
+            height: CommonElements.getTopBotAstoScrHeight(context, 2),
+          ),
+          Container(
+              height: CommonElements.getTopBotAstoScrHeight(context, 5),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerRight,
+                    width: CommonElements.getLetRigAstoScrWidth(context, 33),
+                    child: Text(
+                      "Computer",
+                      style: TextStyle(
+                          color: AppColor.blackColor,
+                          fontSize: CommonElements.getFontSize(context, -1),
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  AbsorbPointer(
+                    absorbing: _isSwitchEnable,
+                    child: Container(
+                      width: CommonElements.getLetRigAstoScrWidth(context, 34),
+                      child: Switch(
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isFriend = _isFriend ? false : true;
+                          });
+                        },
+                        value: _isFriend,
+                        activeColor: AppColor.backgroundColor,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "Friend",
+                      style: TextStyle(
+                          color: AppColor.blackColor,
+                          fontSize: CommonElements.getFontSize(context, -1),
+                          fontWeight: FontWeight.w800),
+                    ),
+                  )
+                ],
+              )),
           Expanded(
             child: GridView.builder(
               padding: EdgeInsets.all(10.0),
@@ -190,17 +257,23 @@ class _State extends State<TicTacToe> {
               itemBuilder: (context, i) => SizedBox(
                 width: 100.0,
                 height: 100.0,
-                child: RaisedButton(
-                  onPressed: buttonList[i].isEnabled
-                      ? () => playGame(buttonList[i])
-                      : null,
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    buttonList[i].text,
-                    style: TextStyle(color: Colors.white, fontSize: 35.0),
+                child: AbsorbPointer(
+                  absorbing: _isGridDisable,
+                  child: RaisedButton(
+                    onPressed: buttonList[i].isEnabled
+                        ? () => playGame(buttonList[i])
+                        : null,
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      buttonList[i].text,
+                      style: TextStyle(
+                          color: AppColor.whiteColor,
+                          fontSize: 35,
+                          fontFamily: "ShadowLight"),
+                    ),
+                    color: buttonList[i].background,
+                    disabledColor: buttonList[i].background,
                   ),
-                  color: buttonList[i].background,
-                  disabledColor: buttonList[i].background,
                 ),
               ),
             ),
@@ -210,10 +283,10 @@ class _State extends State<TicTacToe> {
                 vertical: CommonElements.getTopBotAstoScrHeight(context, 2)),
             child: Text(
               "Reset",
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              style: TextStyle(color: AppColor.blackColor, fontSize: CommonElements.getFontSize(context, -1)),
             ),
             onPressed: resetGameButton,
-            color: AppColor.logoRed,
+            color: AppColor.backgroundColor,
           ),
         ],
       ),

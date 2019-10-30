@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pocketgames_app/common/color.dart';
+import 'package:pocketgames_app/common/commonElements.dart';
 import 'package:pocketgames_app/ticTacToeGame/ticTacToeGame.dart';
 
 class GameSelection extends StatelessWidget {
@@ -11,7 +13,10 @@ class GameSelection extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("Game Selection"),
+        title: Text("Game Selection",
+        style: TextStyle(
+          fontSize: CommonElements.getFontSize(context, -1)
+        ),),
       ),
       body: Container(
           child: Stack(
@@ -26,17 +31,20 @@ class GameSelection extends StatelessWidget {
             ),
           ),
           ListView(
-            padding: EdgeInsets.all(3.5),
+            padding: EdgeInsets.symmetric(horizontal: CommonElements.getTopBotAstoScrHeight(context, 0.5),vertical: CommonElements.getLetRigAstoScrWidth(context, 0.5)),
             children: <Widget>[
               Container(
                   child: Card(
-                    color: Colors.amber[200],
+                    color: AppColor.lightAmberColor,
                     child: ListTile(
-                      onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>TicTacToe()));},
+                      onTap: (){Navigator.pushNamed(context, 'TicTacToe');},
                       leading: Image(
                         image: AssetImage("lib/gameSelection/images/ticTacToe.png"),
                       ),
-                      title: Text("Tic Tac Toe"),
+                      title: Text("Tic Tac Toe",
+                      style: TextStyle(
+                        fontSize: CommonElements.getFontSize(context, 16)
+                      ),),
                     ),
                   )
                   )
